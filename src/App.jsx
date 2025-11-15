@@ -9,7 +9,7 @@ function App() {
             {!isStarted ? (
                 <StartScreen onStart={() => setIsStarted(true)} />
             ) : (
-                <h1 className="text-3xl">Oyun Başlayacak!</h1>
+                <h1 className="text-3xl">Oyun !</h1>
             )}
         </div>
     );
