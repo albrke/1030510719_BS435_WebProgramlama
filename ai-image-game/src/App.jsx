@@ -1,34 +1,57 @@
+// src/App.jsx
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { questions } from './data/questions'
+import StartScreen from './components/StartScreen'
+import GameScreen from './components/GameScreen'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [gameStatus, setGameStatus] = useState('start');
+  const [gameMode, setGameMode] = useState('normal'); // 'normal' veya 'time'
+  const [finalScore, setFinalScore] = useState(0);
+
+  // Mod seçimine göre oyunu başlatan fonksiyon
+  const startGame = (selectedMode) => {
+    setGameMode(selectedMode); // Seçilen modu kaydet
+    setGameStatus('playing');
+  };
+
+  const finishGame = (score) => {
+    setFinalScore(score);
+    setGameStatus('finished');
+  };
+
+  const restartGame = () => {
+    setGameStatus('start');
+    setFinalScore(0);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      {gameStatus === 'start' && <StartScreen onStart={startGame} />}
+
+      {gameStatus === 'playing' && (
+        <GameScreen 
+          questions={questions} 
+          onFinish={finishGame}
+          mode={gameMode} // Mod bilgisini oyuna gönderiyoruz
+        />
+      )}
+
+      {gameStatus === 'finished' && (
+        <div style={{textAlign: 'center', marginTop: '50px', color: 'black'}}>
+          <h1>Oyun Bitti!</h1>
+          <h2>Mod: {gameMode === 'normal' ? 'Normal' : 'Zaman Karşı'}</h2>
+          <h3>Puanın: {finalScore}</h3>
+          <button 
+            onClick={restartGame}
+            style={{padding: '10px 20px', cursor: 'pointer', fontSize: '18px', marginTop: '20px'}}
+          >
+            Tekrar Oyna
+          </button>
+        </div>
+      )}
+    </div>
   )
 }
 
